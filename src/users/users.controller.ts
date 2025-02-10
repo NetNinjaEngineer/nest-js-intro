@@ -83,17 +83,17 @@ export class UsersController {
 
 
     @Get(':id')
-    getUserById(@Param('id') id: string): User | undefined {
+    getUserById(@Param('id') id: number): User | undefined {
         return this.usersService.getUserById(id);
     }
 
     @Put(':id')
-    updateUser(@Param('id') id: string, @Body() userForUpdatePayload: UpdateUserDto): boolean {
+    updateUser(@Param('id') id: number, @Body() userForUpdatePayload: UpdateUserDto): boolean {
         return this.usersService.updateUser(id, userForUpdatePayload);
     }
 
     @Delete(':id')
-    deleteUser(@Param('id') id: string): User[] {
+    deleteUser(@Param('id') id: number): User[] {
         var isDeleted = this.usersService.deleteUser(id);
         return this.usersService.getAllUsers();
     }

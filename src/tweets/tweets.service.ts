@@ -1,6 +1,12 @@
+import { UsersService } from "src/users/users.service";
 import { Tweet } from "./models/tweet.model";
+import { Injectable } from "@nestjs/common";
 
+@Injectable()
 export class TweetsService {
+
+    constructor(private readonly userService: UsersService) { }
+
     private readonly tweets: Tweet[] = [
         {
             id: 1,
@@ -13,7 +19,8 @@ export class TweetsService {
             replies: 10,
             hashtags: ["TypeScript", "Angular"],
             mediaUrl: "https://example.com/image1.jpg",
-            isPinned: false
+            isPinned: false,
+            userId: 1
         },
         {
             id: 2,
@@ -26,7 +33,8 @@ export class TweetsService {
             replies: 5,
             hashtags: ["RxJS", "Angular"],
             mediaUrl: undefined,
-            isPinned: false
+            isPinned: false,
+            userId: 2
         },
         {
             id: 3,
@@ -39,7 +47,8 @@ export class TweetsService {
             replies: 15,
             hashtags: ["Azure", "Cloud"],
             mediaUrl: "https://example.com/image2.jpg",
-            isPinned: false
+            isPinned: false,
+            userId: 3
         },
         {
             id: 4,
@@ -52,7 +61,8 @@ export class TweetsService {
             replies: 50,
             hashtags: ["API", "GraphQL", "REST"],
             mediaUrl: undefined,
-            isPinned: false
+            isPinned: false,
+            userId: 4
         },
         {
             id: 5,
@@ -65,7 +75,8 @@ export class TweetsService {
             replies: 80,
             hashtags: ["MachineLearning", "Python", "AI"],
             mediaUrl: "https://example.com/image3.jpg",
-            isPinned: true
+            isPinned: true,
+            userId: 5
         },
         {
             id: 6,
@@ -78,7 +89,8 @@ export class TweetsService {
             replies: 25,
             hashtags: ["React", "Vue", "Angular", "Frontend"],
             mediaUrl: undefined,
-            isPinned: false
+            isPinned: false,
+            userId: 6
         },
         {
             id: 7,
@@ -91,7 +103,8 @@ export class TweetsService {
             replies: 30,
             hashtags: ["Docker", "DevOps", "NodeJS"],
             mediaUrl: "https://example.com/image4.jpg",
-            isPinned: false
+            isPinned: false,
+            userId: 7
         },
         {
             id: 8,
@@ -104,7 +117,8 @@ export class TweetsService {
             replies: 70,
             hashtags: ["UX", "UI", "DarkMode", "LightMode"],
             mediaUrl: undefined,
-            isPinned: false
+            isPinned: false,
+            userId: 8
         },
         {
             id: 9,
@@ -117,7 +131,8 @@ export class TweetsService {
             replies: 20,
             hashtags: ["Redis", "Performance", "Caching"],
             mediaUrl: "https://example.com/image5.jpg",
-            isPinned: false
+            isPinned: false,
+            userId: 9
         },
         {
             id: 10,
@@ -130,7 +145,8 @@ export class TweetsService {
             replies: 90,
             hashtags: ["CQRS", "EventSourcing", "Architecture"],
             mediaUrl: undefined,
-            isPinned: true
+            isPinned: true,
+            userId: 10
         }
     ];
 
@@ -142,6 +158,21 @@ export class TweetsService {
 
     getTweetById(id: number): Tweet | undefined {
         return this.tweets.find(tweet => tweet.id === id);
+    }
+
+    getTweetsByUserId(userId: number) {
+        const user = this.userService.getUserById(userId);
+        if (user === undefined) {
+            return [];
+        }
+
+        console.log(user);
+
+        const filteredTweets = this.tweets.filter(tweet => tweet.userId === userId);
+
+        const response = filteredTweets.map(t => { return { content: t.text, userName: user.name } });
+
+        return response;
     }
 
 }

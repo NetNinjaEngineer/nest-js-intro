@@ -1,13 +1,15 @@
+import { Injectable } from "@nestjs/common";
 import { UpdateUserDto } from "./dtos/updateUser.dto";
 import { User } from "./models/user.model";
 
+@Injectable()
 export class UsersService {
     getUsersBasedOnGender(gender: string): User[] {
         return this._users.filter(user => user.gender?.toLowerCase() === gender.toLowerCase());
     }
     private _users: User[] = [
         {
-            id: '1',
+            id: 1,
             name: 'Mohamed',
             email: 'mohamed@gmail.com',
             password: '123456',
@@ -21,7 +23,7 @@ export class UsersService {
             phone: '01012345678'
         },
         {
-            id: '2',
+            id: 2,
             name: 'Ahmed',
             email: 'ahmed@gmail.com',
             password: '123456',
@@ -35,7 +37,7 @@ export class UsersService {
             phone: '01112345678'
         },
         {
-            id: '3',
+            id: 3,
             name: 'Sara',
             email: 'sara@example.com',
             password: '123456',
@@ -54,7 +56,7 @@ export class UsersService {
         return this._users;
     }
 
-    getUserById(id: string): User | undefined {
+    getUserById(id: number): User | undefined {
         return this._users.find(user => user.id === id);
     }
 
@@ -63,7 +65,7 @@ export class UsersService {
         this._users.push(user);
     }
 
-    updateUser(id: string, user: UpdateUserDto): boolean {
+    updateUser(id: number, user: UpdateUserDto): boolean {
         var existingUser = this._users.find(u => u.id === id);
         if (!existingUser)
             return false;
@@ -81,7 +83,7 @@ export class UsersService {
     }
 
 
-    deleteUser(id: string): boolean {
+    deleteUser(id: number): boolean {
         var existingUserIndex = this._users.findIndex(u => u.id === id);
         if (existingUserIndex === -1)
             return false;

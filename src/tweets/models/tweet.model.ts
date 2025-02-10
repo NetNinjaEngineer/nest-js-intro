@@ -10,4 +10,5 @@ export interface Tweet {
     hashtags: string[];
     mediaUrl?: string;
     isPinned: boolean;
+    userId: number;
 }

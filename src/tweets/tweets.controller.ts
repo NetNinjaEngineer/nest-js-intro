@@ -26,4 +26,10 @@ export class TweetsController {
         console.log(typeof id, id);
         return this._tweetsService.getTweetById(id);
     }
+
+
+    @Get('/v2/:userId')
+    getTweetsByUserId(@Param('userId', ParseIntPipe) userId: number) {
+        return this._tweetsService.getTweetsByUserId(userId);
+    }
 }
