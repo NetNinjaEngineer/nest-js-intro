@@ -11,4 +11,5 @@ export interface User {
     phone?: string;
     location?: string;
     bio?: string;
+    isMarried?: boolean;
 }

@@ -1,8 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, ValidationPipe } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query, ValidationPipe } from "@nestjs/common";
 import { User } from "./models/user.model";
 import { UsersService } from "./users.service";
 import { UpdateUserDto } from "./dtos/updateUser.dto";
 import { CreateUserDto } from "./dtos/create-user.dto";
+import { GetUserParamDto } from "./dtos/get-user-param.dto";
 
 // pipes are functions that is used to transform the input data to the desired format
 // pipes are used to validate the input data before it reaches the controller
@@ -20,13 +21,30 @@ export class UsersController {
     // }
 
     @Get()
-    getAllUsers(@Query() queryParameters: any): User[] {
+    getAllUsers(
+        @Query() queryParameters: any,
+        @Param() param: GetUserParamDto): User[] {
 
         console.log(queryParameters);
+        console.log(param);
 
         if (queryParameters.gender) {
             return this.usersService.getAllUsers().filter(user => user.gender?.toLowerCase() === queryParameters.gender.toLowerCase());
         }
+
+        return this.usersService.getAllUsers();
+    }
+
+    @Get('/v1')
+    getAllUsersByMaritalStatus(
+        @Query() param: GetUserParamDto): User[] {
+
+        // console.log(queryParameters);
+        console.log(param);
+
+        // if (queryParameters.gender) {
+        //     return this.usersService.getAllUsers().filter(user => user.gender?.toLowerCase() === queryParameters.gender.toLowerCase());
+        // }
 
         return this.usersService.getAllUsers();
     }
@@ -80,7 +98,5 @@ export class UsersController {
         console.log(userForCreate instanceof CreateUserDto); // False
         return this.usersService.getAllUsers();
     }
-
-
 
 }
