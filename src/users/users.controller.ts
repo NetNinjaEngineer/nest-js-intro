@@ -1,15 +1,17 @@
 import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  ParseIntPipe,
-  Patch,
-  Post,
-  Put,
-  Query,
-  ValidationPipe,
+    Body,
+    Controller,
+    Delete,
+    forwardRef,
+    Get,
+    Inject,
+    Param,
+    ParseIntPipe,
+    Patch,
+    Post,
+    Put,
+    Query,
+    ValidationPipe,
 } from '@nestjs/common';
 import { User } from "./models/user.model";
 import { UsersService } from "./users.service";
@@ -17,6 +19,7 @@ import { UpdateUserDto } from "./dtos/updateUser.dto";
 import { CreateUserDto } from "./dtos/create-user.dto";
 import { GetUserParamDto } from "./dtos/get-user-param.dto";
 import { UpdateUserRequestDto } from './dtos/update-user.dto';
+import { AuthService } from 'src/auth/auth.service';
 
 // pipes are functions that is used to transform the input data to the desired format
 // pipes are used to validate the input data before it reaches the controller
@@ -26,7 +29,9 @@ import { UpdateUserRequestDto } from './dtos/update-user.dto';
 @Controller('/api/users')
 export class UsersController {
 
-    constructor(private readonly usersService: UsersService) { }
+    constructor(
+        private readonly usersService: UsersService,
+        @Inject(forwardRef(() => AuthService)) private readonly authService: AuthService) { }
 
     // @Get()
     // getAllUsers(): User[] {
@@ -36,8 +41,8 @@ export class UsersController {
     @Get()
     getAllUsers(
         @Query() queryParameters: any,
-    @Param() param: GetUserParamDto,
-  ): User[] {
+        @Param() param: GetUserParamDto,
+    ): User[] {
 
         console.log(queryParameters);
         console.log(param);
@@ -116,7 +121,7 @@ export class UsersController {
 
     @Patch('')
     partiallyUpdateUser(@Body() updateUserRequest: UpdateUserRequestDto) {
-      console.log(updateUserRequest);
+        console.log(updateUserRequest);
     }
 
 }
