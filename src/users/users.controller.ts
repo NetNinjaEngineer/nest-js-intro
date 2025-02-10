@@ -73,9 +73,11 @@ export class UsersController {
     //Serialization/Deserialization: Class transformers can be used to serialize class instances into plain objects or JSON, and deserialize plain objects or JSON into class instances. This is particularly useful when dealing with data transfer objects (DTOs) in APIs.
 
     //Type Safety: By transforming data into class instances, you can leverage TypeScript's type safety features. This helps catch errors at compile time and makes your code more robust.
-    
+
     @Post()
     createNewUser(@Body(new ValidationPipe()) userForCreate: CreateUserDto): User[] {
+        console.log(typeof userForCreate); // Object not CreateUserDto
+        console.log(userForCreate instanceof CreateUserDto); // False
         return this.usersService.getAllUsers();
     }
 
