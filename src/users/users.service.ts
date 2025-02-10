@@ -2,6 +2,9 @@ import { UpdateUserDto } from "./dtos/updateUser.dto";
 import { User } from "./models/user.model";
 
 export class UsersService {
+    getUsersBasedOnGender(gender: string): User[] {
+        return this._users.filter(user => user.gender?.toLowerCase() === gender.toLowerCase());
+    }
     private _users: User[] = [
         {
             id: '1',
@@ -30,6 +33,20 @@ export class UsersService {
             gender: 'Male',
             location: 'Alexandria',
             phone: '01112345678'
+        },
+        {
+            id: '3',
+            name: 'Sara',
+            email: 'sara@example.com',
+            password: '123456',
+            role: 'user',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            age: 20,
+            gender: 'female',
+            bio: 'Iam a student',
+            location: 'Giza',
+            phone: '01212345678'
         }
     ];
 

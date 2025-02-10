@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, Query } from "@nestjs/common";
 import { User } from "./models/user.model";
 import { UsersService } from "./users.service";
 import { UpdateUserDto } from "./dtos/updateUser.dto";
@@ -8,9 +8,26 @@ export class UsersController {
 
     constructor(private readonly usersService: UsersService) { }
 
+    // @Get()
+    // getAllUsers(): User[] {
+    //     return this.usersService.getAllUsers();
+    // }
+
     @Get()
-    getAllUsers(): User[] {
+    getAllUsers(@Query() queryParameters: any): User[] {
+
+        console.log(queryParameters);
+
+        if (queryParameters.gender) {
+            return this.usersService.getAllUsers().filter(user => user.gender?.toLowerCase() === queryParameters.gender.toLowerCase());
+        }
+
         return this.usersService.getAllUsers();
+    }
+
+    @Get('/usersv2')
+    getV2Users(@Query('gender') gender: string): User[] {
+        return this.usersService.getAllUsers().filter(user => user.gender?.toLowerCase() == gender.toLowerCase());
     }
 
     @Post()
@@ -42,5 +59,6 @@ export class UsersController {
         var isDeleted = this.usersService.deleteUser(id);
         return this.usersService.getAllUsers();
     }
+
 
 }
