@@ -3,6 +3,11 @@ import { User } from "./models/user.model";
 import { UsersService } from "./users.service";
 import { UpdateUserDto } from "./dtos/updateUser.dto";
 
+// pipes are functions that is used to transform the input data to the desired format
+// pipes are used to validate the input data before it reaches the controller
+// used to clean and sanitize the input data and convert it to the specific format that ensures
+// that the data before reaching the controller is in the correct format
+
 @Controller('/api/users')
 export class UsersController {
 
