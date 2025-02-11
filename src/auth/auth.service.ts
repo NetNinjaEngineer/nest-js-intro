@@ -1,16 +1,23 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { ConflictException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from "@nestjs/typeorm";
 import { RegisterDto } from "./dtos/register.dto";
 import { User } from "./entities/user.entity";
 import * as bcrypt from "bcryptjs";
 import { Repository } from "typeorm";
 import { BaseErrorResponseDto } from "src/common/dto/base-error-response.dto";
+import { CreateUserDto } from './dtos/create-user.dto';
+import { Profile } from '../profile/profile.entity';
 
 @Injectable()
 export class AuthService {
     constructor(
         @InjectRepository(User)
-        private readonly userRepository: Repository<User>) { }
+        private readonly userRepository: Repository<User>,
+
+        @InjectRepository(Profile)
+        private readonly profileRepository: Repository<Profile>) {
+
+    }
 
 
     async register(registerRequest: RegisterDto): Promise<User> {
@@ -31,6 +38,45 @@ export class AuthService {
         this.userRepository.save(user);
 
         return user;
+    }
+
+    async createUser(userDto: CreateUserDto) {
+
+        userDto.profile = userDto.profile ?? {};
+
+        // create profile and save it in profile table
+        const profile = this.profileRepository.create(userDto.profile);
+        await this.profileRepository.save(profile);
+
+
+        const existingUser = await this.userRepository.findOne({
+            where: { email: userDto.email },
+        })
+
+        if (existingUser) {
+            throw new ConflictException('The user with the given email is already taken');
+        }
+
+        // create the user
+
+
+
+        const user = this.userRepository.create(userDto);
+
+        user.profile = profile;
+
+        await this.userRepository.save(user);
+
+        return user;
+    }
+
+
+    async getAllUsers() {
+        return await this.userRepository.find({
+            relations: {
+                profile: true
+            }
+        })
     }
 
 }

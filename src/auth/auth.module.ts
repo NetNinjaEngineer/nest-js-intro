@@ -6,6 +6,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { User } from "./entities/user.entity";
 import { JwtModule } from "@nestjs/jwt";
 import { jwtConstants } from "./auth.constants";
+import { Profile } from '../profile/profile.entity';
 
 @Module({
     controllers: [AuthController],
@@ -13,7 +14,7 @@ import { jwtConstants } from "./auth.constants";
     exports: [AuthService],
     imports: [
         forwardRef(() => UsersModule),
-        TypeOrmModule.forFeature([User]),
+        TypeOrmModule.forFeature([User, Profile]),
         JwtModule.register({
             global: true,
             secret: jwtConstants.secretKey,

@@ -12,4 +12,10 @@ export class ConversationController {
     async startPrivateConversation(@Body() request: any) {
         return await this.conversationService.startPrivateConversation();
     }
+
+
+    @Get('private')
+    async getPrivateConversations() {
+        return this.conversationService.getPrivateConversations();
+    }
 }

@@ -26,4 +26,16 @@ export class ConversationService {
         return conversation;
     }
 
+
+    async getPrivateConversations() {
+        let conversations = await this.privateConversationRepository
+            .createQueryBuilder("conversation")
+            .where("conversation.type = :type", { type: 'PrivateConversation' })
+            .getMany();
+
+
+        return conversations;
+
+    }
+
 }
