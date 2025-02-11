@@ -29,6 +29,7 @@ export class AuthService {
 
         const user = this.userRepository.create({ email, password: passwordHash, fullName });
         this.userRepository.save(user);
+
         return user;
     }
 
