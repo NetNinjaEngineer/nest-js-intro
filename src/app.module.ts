@@ -14,6 +14,7 @@ import { GroupConversation } from './conversation/entities/group-conversation.en
 import { PrivateConversation } from './conversation/entities/private-conversation.entity';
 import { Message } from './messages/entities/message.entity';
 import { Conversation } from './conversation/entities/common/conversation.entity';
+import { ProfileModule } from './profile/profile.module';
 
 @Module({
     imports: [
@@ -25,14 +26,15 @@ import { Conversation } from './conversation/entities/common/conversation.entity
                 username: 'postgres',
                 password: 'postgres',
                 database: 'learn_nest',
-                entities: [
-                    User,
-                    Group,
-                    GroupConversation,
-                    PrivateConversation,
-                    Message,
-                    Conversation
-                ],
+                // entities: [
+                //     User,
+                //     Group,
+                //     GroupConversation,
+                //     PrivateConversation,
+                //     Message,
+                //     Conversation
+                // ],
+                autoLoadEntities: true,
                 synchronize: true
             })
         }),
@@ -41,7 +43,8 @@ import { Conversation } from './conversation/entities/common/conversation.entity
         AuthModule,
         ConversationModule,
         GroupModule,
-        MessagesModule
+        MessagesModule,
+        ProfileModule
     ],
     controllers: [AppController],
     providers: [AppService],

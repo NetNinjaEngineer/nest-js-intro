@@ -1,8 +1,8 @@
-import { Column, Entity, OneToMany } from "typeorm";
+import { ChildEntity, Column, OneToMany } from "typeorm";
 import { Conversation } from "./common/conversation.entity";
 import { Message } from "src/messages/entities/message.entity";
 
-@Entity()
+@ChildEntity()
 export class PrivateConversation extends Conversation {
     @Column({ type: 'uuid' })
     senderId: string;

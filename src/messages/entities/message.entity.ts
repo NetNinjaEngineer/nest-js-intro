@@ -7,31 +7,35 @@ import { PrivateConversation } from "../../conversation/entities/private-convers
 export class Message extends BaseEntity {
     @Column({ type: 'uuid', nullable: true })
     privateConversationId?: string;
-  
+
     @ManyToOne(() => PrivateConversation, (conv) => conv.messages, { nullable: true })
     privateConversation?: PrivateConversation;
-  
+
     @Column({ type: 'uuid', nullable: true })
     groupConversationId?: string;
-  
+
     @ManyToOne(() => GroupConversation, (conv) => conv.messages, { nullable: true })
     groupConversation?: GroupConversation;
-  
-    @Column({ nullable: true })
+
+    @Column({
+        nullable: true,
+        type: 'varchar',
+        length: 500
+    })
     content?: string;
-  
+
     @Column({ type: 'timestamptz' })
     createdAt: Date;
-  
+
     @Column({ type: 'timestamptz', nullable: true })
     updatedAt?: Date;
-  
+
     @Column({ type: 'timestamptz', nullable: true })
     readedAt?: Date;
-  
+
     @Column({ default: false })
     isEdited: boolean;
-  
+
     @Column({ default: false })
     isPinned: boolean;
 }

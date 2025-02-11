@@ -1,9 +1,9 @@
-import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
+import { ChildEntity, Column, ManyToOne, OneToMany } from "typeorm";
 import { Conversation } from "./common/conversation.entity";
 import { Group } from "../../group/entities/group.entity";
 import { Message } from "../../messages/entities/message.entity";
 
-@Entity()
+@ChildEntity()
 export class GroupConversation extends Conversation {
     @Column({ type: 'uuid' })
     groupId: string;
