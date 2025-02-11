@@ -23,54 +23,38 @@ export class MessagesService {
 
 
     async sendGroupMessageAsync(command: SendGroupMessageDto) {
-        const queryRunner = this.messageRepository.manager.connection.createQueryRunner();
-        await queryRunner.connect();
-        await queryRunner.startTransaction();
-
-        try {
-            // check if the group exists
-
-            const existingGroup = this.groupRepository.findOne({ where: { id: command.groupId } });
-
-            if (!existingGroup) {
-                throw new HttpException(new BaseErrorResponseDto(
-                    `Group with ID ${command.groupId} does not exist`,
-                    HttpStatus.NOT_FOUND
-                ), HttpStatus.NOT_FOUND)
-            }
-
-            const existingConversation = this.groupConversationRepository.findOne({
-                where: { id: command.conversationId, groupId: command.groupId }
-            })
-
-            if (!existingConversation) {
-                throw new HttpException(new BaseErrorResponseDto(
-                    `Initialize the group conversation first`,
-                    HttpStatus.BAD_REQUEST
-                ), HttpStatus.BAD_REQUEST)
-            }
-
-            // create message
-
-            const createdMessage = this.messageRepository.create({
-                id: crypto.randomUUID(),
-                content: command.message,
-                isEdited: false,
-                isPinned: false,
-                groupConversationId: command.conversationId
-            })
-
-
-            await queryRunner.manager.save(Message, createdMessage);
-            await queryRunner.commitTransaction();
-
-            return createdMessage.id;
-
-        } catch (error) {
-            await queryRunner.rollbackTransaction();
-        } finally {
-            await queryRunner.release();
+        // Ensure the group exists
+        const existingGroup = await this.groupRepository.findOne({ where: { id: command.groupId } });
+        if (!existingGroup) {
+            throw new HttpException(new BaseErrorResponseDto(
+                `Group with ID ${command.groupId} does not exist`,
+                HttpStatus.NOT_FOUND
+            ), HttpStatus.NOT_FOUND);
         }
+
+        // Ensure the conversation exists
+        const existingConversation = await this.groupConversationRepository.findOne({
+            where: { id: command.conversationId, groupId: command.groupId }
+        });
+        if (!existingConversation) {
+            throw new HttpException(new BaseErrorResponseDto(
+                `Initialize the group conversation first`,
+                HttpStatus.BAD_REQUEST
+            ), HttpStatus.BAD_REQUEST);
+        }
+
+        // Create message
+        const message = this.messageRepository.create({
+            id: crypto.randomUUID(),
+            content: command.message,
+            isEdited: false,
+            isPinned: false,
+            groupConversationId: command.conversationId
+        });
+
+        await this.messageRepository.save(message);
+
+        return message.id;
 
     }
 }
