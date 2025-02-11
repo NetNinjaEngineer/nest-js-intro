@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { User } from "src/auth/entities/user.entity";
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Profile {
@@ -17,4 +18,7 @@ export class Profile {
 
     @Column({ nullable: true })
     country?: string;
+
+    @OneToOne(() => User, (user) => user.profile)
+    user: User
 }

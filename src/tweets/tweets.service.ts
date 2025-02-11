@@ -1,178 +1,34 @@
 import { UsersService } from "src/users/users.service";
-import { Tweet } from "./models/tweet.model";
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { Tweet } from "./tweet.entity";
+import { CreateTweetDto } from "./dto/create-tweet.dto";
+import { AuthService } from "src/auth/auth.service";
 
 @Injectable()
 export class TweetsService {
 
-    constructor(private readonly userService: UsersService) { }
-
-    private readonly tweets: Tweet[] = [
-        {
-            id: 1,
-            text: "Just finished an amazing project with #TypeScript and #Angular! 🚀",
-            createdAt: new Date("2024-02-01T12:00:00Z"),
-            updatedAt: new Date("2024-02-01T12:30:00Z"),
-            author: "devMohamed",
-            likes: 120,
-            retweets: 50,
-            replies: 10,
-            hashtags: ["TypeScript", "Angular"],
-            mediaUrl: "https://example.com/image1.jpg",
-            isPinned: false,
-            userId: 1
-        },
-        {
-            id: 2,
-            text: "Learning RxJS has been a game changer for handling async data in Angular! 🔥",
-            createdAt: new Date("2024-02-02T08:15:00Z"),
-            updatedAt: new Date("2024-02-02T08:45:00Z"),
-            author: "codeMaster",
-            likes: 95,
-            retweets: 30,
-            replies: 5,
-            hashtags: ["RxJS", "Angular"],
-            mediaUrl: undefined,
-            isPinned: false,
-            userId: 2
-        },
-        {
-            id: 3,
-            text: "Deploying an app to #Azure is so smooth! Loving the cloud experience ☁️",
-            createdAt: new Date("2024-02-03T14:45:00Z"),
-            updatedAt: new Date("2024-02-03T15:00:00Z"),
-            author: "cloudDev",
-            likes: 140,
-            retweets: 60,
-            replies: 15,
-            hashtags: ["Azure", "Cloud"],
-            mediaUrl: "https://example.com/image2.jpg",
-            isPinned: false,
-            userId: 3
-        },
-        {
-            id: 4,
-            text: "GraphQL vs REST: Which one do you prefer and why? #API #GraphQL",
-            createdAt: new Date("2024-02-04T18:30:00Z"),
-            updatedAt: new Date("2024-02-04T19:00:00Z"),
-            author: "apiGuru",
-            likes: 200,
-            retweets: 100,
-            replies: 50,
-            hashtags: ["API", "GraphQL", "REST"],
-            mediaUrl: undefined,
-            isPinned: false,
-            userId: 4
-        },
-        {
-            id: 5,
-            text: "Exploring #MachineLearning with Python! 🚀 Any book recommendations?",
-            createdAt: new Date("2024-02-05T10:00:00Z"),
-            updatedAt: new Date("2024-02-05T10:30:00Z"),
-            author: "aiExplorer",
-            likes: 300,
-            retweets: 150,
-            replies: 80,
-            hashtags: ["MachineLearning", "Python", "AI"],
-            mediaUrl: "https://example.com/image3.jpg",
-            isPinned: true,
-            userId: 5
-        },
-        {
-            id: 6,
-            text: "What’s your favorite frontend framework? #React, #Vue, or #Angular?",
-            createdAt: new Date("2024-02-06T07:45:00Z"),
-            updatedAt: new Date("2024-02-06T08:15:00Z"),
-            author: "frontendFanatic",
-            likes: 180,
-            retweets: 75,
-            replies: 25,
-            hashtags: ["React", "Vue", "Angular", "Frontend"],
-            mediaUrl: undefined,
-            isPinned: false,
-            userId: 6
-        },
-        {
-            id: 7,
-            text: "Dockerizing my Node.js API today! Loving how easy it makes deployment! 🐳",
-            createdAt: new Date("2024-02-07T09:30:00Z"),
-            updatedAt: new Date("2024-02-07T10:00:00Z"),
-            author: "devOpsNerd",
-            likes: 220,
-            retweets: 90,
-            replies: 30,
-            hashtags: ["Docker", "DevOps", "NodeJS"],
-            mediaUrl: "https://example.com/image4.jpg",
-            isPinned: false,
-            userId: 7
-        },
-        {
-            id: 8,
-            text: "Dark mode or Light mode? What’s your preference? 🌙☀️ #UX #UI",
-            createdAt: new Date("2024-02-08T20:00:00Z"),
-            updatedAt: new Date("2024-02-08T20:15:00Z"),
-            author: "uiDesigner",
-            likes: 250,
-            retweets: 120,
-            replies: 70,
-            hashtags: ["UX", "UI", "DarkMode", "LightMode"],
-            mediaUrl: undefined,
-            isPinned: false,
-            userId: 8
-        },
-        {
-            id: 9,
-            text: "Using Redis caching has significantly boosted my API performance! #Redis #Performance",
-            createdAt: new Date("2024-02-09T13:00:00Z"),
-            updatedAt: new Date("2024-02-09T13:30:00Z"),
-            author: "backendGuru",
-            likes: 175,
-            retweets: 80,
-            replies: 20,
-            hashtags: ["Redis", "Performance", "Caching"],
-            mediaUrl: "https://example.com/image5.jpg",
-            isPinned: false,
-            userId: 9
-        },
-        {
-            id: 10,
-            text: "Today I learned about #CQRS and #EventSourcing! Mind-blowing concepts! 🔥",
-            createdAt: new Date("2024-02-10T16:45:00Z"),
-            updatedAt: new Date("2024-02-10T17:15:00Z"),
-            author: "architectureGeek",
-            likes: 320,
-            retweets: 140,
-            replies: 90,
-            hashtags: ["CQRS", "EventSourcing", "Architecture"],
-            mediaUrl: undefined,
-            isPinned: true,
-            userId: 10
-        }
-    ];
+    constructor(
+        private readonly userService: UsersService,
+        @InjectRepository(Tweet) private readonly tweetRepository: Repository<Tweet>,
+        private readonly authService: AuthService) { }
 
 
-    getAllTweets(): Tweet[] {
-        return this.tweets;
-    }
+    public async createTweet(createTweetDto: CreateTweetDto) {
+        // check is there exists a user in database with this user id
+        const existedUser = await this.authService.findUserById(createTweetDto.userId);
 
-
-    getTweetById(id: number): Tweet | undefined {
-        return this.tweets.find(tweet => tweet.id === id);
-    }
-
-    getTweetsByUserId(userId: number) {
-        const user = this.userService.getUserById(userId);
-        if (user === undefined) {
-            return [];
+        if (!existedUser) {
+            throw new NotFoundException('There is no exist a user with this id in the database')
         }
 
-        console.log(user);
+        const createdTweet = this.tweetRepository.create(createTweetDto);
+        createdTweet.user = existedUser;
+        await this.tweetRepository.save(createdTweet);
 
-        const filteredTweets = this.tweets.filter(tweet => tweet.userId === userId);
+        return createdTweet;
 
-        const response = filteredTweets.map(t => { return { content: t.text, userName: user.name } });
-
-        return response;
     }
 
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Post, ValidationPipe } from "@nestjs/common";
+import { Body, Controller, Get, Post, ValidationPipe } from "@nestjs/common";
 import { ProfileService } from "./profile.service";
 import { CreateProfileDto } from "./dto/create-profile.dto";
 
@@ -14,5 +14,10 @@ export class ProfileController {
             transform: true
         })) profileDto: CreateProfileDto) {
         return this.profileService.createProfile(profileDto);
+    }
+
+    @Get()
+    async getUserProfiles() {
+        return await this.profileService.getAllProfiles();
     }
 }

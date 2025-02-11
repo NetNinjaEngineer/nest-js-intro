@@ -17,4 +17,13 @@ export class ProfileService {
             return profile;
         }
 
+
+        async getAllProfiles() {
+            return await this.profileRepository.find({
+                relations: {
+                    user: true
+                }
+            })
+        }
+
 }

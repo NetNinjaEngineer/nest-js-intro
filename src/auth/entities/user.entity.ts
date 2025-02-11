@@ -1,5 +1,6 @@
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Profile } from '../../profile/profile.entity';
+import { Tweet } from 'src/tweets/tweet.entity';
 
 @Entity()
 export class User {
@@ -15,7 +16,11 @@ export class User {
   @Column()
   fullName: string;
 
-  @OneToOne(()=> Profile)
+  @OneToOne(() => Profile, (profile) => profile.user)
   @JoinColumn()
   profile?: Profile;
+
+
+  @OneToMany(() => Tweet, (tweet) => tweet.user)
+  tweets: Tweet[]
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, forwardRef, Get, Inject, Post, ValidationPipe } from "@nestjs/common";
+import { Body, Controller, Delete, forwardRef, Get, Inject, Param, ParseIntPipe, Post, ValidationPipe } from "@nestjs/common";
 import { UsersService } from "src/users/users.service";
 import { AuthService } from "./auth.service";
 import { RegisterDto } from "./dtos/register.dto";
@@ -28,6 +28,17 @@ export class AuthController {
     @Get('all-users')
     async getAllUsers() {
         return await this.authService.getAllUsers();
+    }
+
+
+    @Delete(':id')
+    async deleteUser(@Param('id', ParseIntPipe) id: number) {
+        return await this.authService.deleteUser(id);
+    }
+
+    @Get('get-user-with-tweets/:id')
+    public async getUserWithTweets(@Param('id', ParseIntPipe) id: number) {
+        return this.authService.getUserWithTweets(id);
     }
 
 }

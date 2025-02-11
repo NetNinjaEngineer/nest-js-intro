@@ -1,4 +1,4 @@
-import { ConflictException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { ConflictException, HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from "@nestjs/typeorm";
 import { RegisterDto } from "./dtos/register.dto";
 import { User } from "./entities/user.entity";
@@ -76,6 +76,35 @@ export class AuthService {
             relations: {
                 profile: true
             }
+        })
+    }
+
+
+    async deleteUser(id: number) {
+        // check is the user existed
+        const user = await this.userRepository.findOneBy({ id: id })
+        if (!user) {
+            throw new NotFoundException('The user is not existed')
+        }
+
+
+        await this.profileRepository.delete(user.profile?.id ?? 0)
+
+        // delete the user profile
+        await this.userRepository.delete(id)
+
+        return { isDeleted: true };
+
+    }
+
+    public async findUserById(id: number) {
+        return await this.userRepository.findOneBy({ id });
+    }
+
+    public async getUserWithTweets(id: number) {
+        return this.userRepository.findOne({
+            where: { id },
+            relations: { tweets: true }
         })
     }
 
