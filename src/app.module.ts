@@ -15,6 +15,7 @@ import { PrivateConversation } from './conversation/entities/private-conversatio
 import { Message } from './messages/entities/message.entity';
 import { Conversation } from './conversation/entities/common/conversation.entity';
 import { ProfileModule } from './profile/profile.module';
+import { HashtagModule } from './hashtag/hashtags.module';
 
 @Module({
     imports: [
@@ -44,7 +45,8 @@ import { ProfileModule } from './profile/profile.module';
         ConversationModule,
         GroupModule,
         MessagesModule,
-        ProfileModule
+        ProfileModule,
+        HashtagModule
     ],
     controllers: [AppController],
     providers: [AppService],

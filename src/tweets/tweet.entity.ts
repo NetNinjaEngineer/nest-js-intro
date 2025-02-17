@@ -1,5 +1,6 @@
 import { User } from "src/auth/entities/user.entity";
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Hashtag } from "src/hashtag/hashtag.entity";
+import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
 export class Tweet {
@@ -19,5 +20,9 @@ export class Tweet {
 
     @ManyToOne(() => User, (user) => user.tweets)
     user: User
+
+    @ManyToMany(() => Hashtag)
+    @JoinTable()
+    hashtag: Hashtag
 
 }
