@@ -102,7 +102,13 @@ export class AuthService {
     }
 
     public async getUserWithTweets(id: number) {
-        return this.userRepository.findOne({
+
+        var existedUser = await this.userRepository.findOneBy({ id });
+        if (!existedUser) {
+            throw new NotFoundException('User Not Exists')
+        }
+
+        return await this.userRepository.findOne({
             where: { id },
             relations: { tweets: true }
         })
