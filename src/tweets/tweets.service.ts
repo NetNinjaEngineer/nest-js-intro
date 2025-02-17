@@ -5,14 +5,18 @@ import { Repository } from "typeorm";
 import { Tweet } from "./tweet.entity";
 import { CreateTweetDto } from "./dto/create-tweet.dto";
 import { AuthService } from "src/auth/auth.service";
+import { HashtagsService } from "src/hashtag/hashtags.service";
 
 @Injectable()
 export class TweetsService {
 
     constructor(
+        @InjectRepository(Tweet)
+        private readonly tweetRepository: Repository<Tweet>,
+        private readonly hashtagsService: HashtagsService,
+        private readonly authService: AuthService,
         private readonly userService: UsersService,
-        @InjectRepository(Tweet) private readonly tweetRepository: Repository<Tweet>,
-        private readonly authService: AuthService) { }
+    ) { }
 
 
     public async createTweet(createTweetDto: CreateTweetDto) {
@@ -23,8 +27,10 @@ export class TweetsService {
             throw new NotFoundException('There is no exist a user with this id in the database')
         }
 
-        const createdTweet = this.tweetRepository.create(createTweetDto);
-        createdTweet.user = existedUser;
+        const hashtags = await this.hashtagsService.findHashtags(createTweetDto.hashtags ?? []);
+
+        const createdTweet = this.tweetRepository.create({ ...createTweetDto, user: existedUser, hashtag: hashtags });
+
         await this.tweetRepository.save(createdTweet);
 
         return createdTweet;

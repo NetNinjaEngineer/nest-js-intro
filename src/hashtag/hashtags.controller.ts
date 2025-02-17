@@ -1,4 +1,4 @@
-import { Body, Controller, Post, ValidationPipe } from "@nestjs/common";
+import { Body, Controller, Get, Post, ValidationPipe } from "@nestjs/common";
 import { CreateHashtagDto } from "./dtos/create-hashtag.dto";
 import { HashtagsService } from "./hashtags.service";
 
@@ -11,5 +11,10 @@ export class HashtagsController {
         @Body(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
         request: CreateHashtagDto) {
         return await this.hashtagService.createNewHashTag(request);
+    }
+
+    @Get()
+    async getAll() {
+        return await this.hashtagService.getAllHashtags();
     }
 }

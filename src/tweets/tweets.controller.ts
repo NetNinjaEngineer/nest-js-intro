@@ -1,4 +1,4 @@
-import { Body, Controller, DefaultValuePipe, Get, Param, ParseIntPipe, Post, Query } from "@nestjs/common";
+import { Body, Controller, Post, Query } from "@nestjs/common";
 import { TweetsService } from "./tweets.service";
 import { CreateTweetDto } from "./dto/create-tweet.dto";
 
@@ -35,6 +35,6 @@ export class TweetsController {
 
     @Post()
     public async create(@Body() createTweetDto: CreateTweetDto) {
-        return this._tweetsService.createTweet(createTweetDto);
+        return await this._tweetsService.createTweet(createTweetDto);
     }
 }

@@ -23,6 +23,6 @@ export class Tweet {
 
     @ManyToMany(() => Hashtag)
     @JoinTable()
-    hashtag: Hashtag
+    hashtag: Hashtag[]
 
 }
