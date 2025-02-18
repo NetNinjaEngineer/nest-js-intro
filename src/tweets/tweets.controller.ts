@@ -1,6 +1,7 @@
-import { Body, Controller, Post, Query } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from "@nestjs/common";
 import { TweetsService } from "./tweets.service";
 import { CreateTweetDto } from "./dto/create-tweet.dto";
+import { UpdateTweetDto } from "./dto/update-tweet.dto";
 
 @Controller('/api/tweets')
 export class TweetsController {
@@ -21,20 +22,37 @@ export class TweetsController {
     // Specifically, it converts a string parameter to an integer. 
     // If the transformation fails (i.e., the parameter cannot be converted to an integer),
     //  it throws an error.
-    // @Get(':id')
-    // getTweetById(@Param('id', ParseIntPipe) id: number): Tweet | undefined {
-    //     console.log(typeof id, id);
-    //     return this._tweetsService.getTweetById(id);
-    // }
+    @Get(':id')
+    getTweetById(@Param('id', ParseIntPipe) id: number) {
+        return this._tweetsService.getSingleTweet(id);
+    }
 
 
-    // @Get('/v2/:userId')
-    // getTweetsByUserId(@Param('userId', ParseIntPipe) userId: number) {
-    //     return this._tweetsService.getTweetsByUserId(userId);
-    // }
+    @Get('get-tweets-for/:userId')
+    getTweetsByUserId(@Param('userId', ParseIntPipe) userId: number) {
+        return this._tweetsService.getTweetsForUser(userId);
+    }
 
     @Post()
     public async create(@Body() createTweetDto: CreateTweetDto) {
         return await this._tweetsService.createTweet(createTweetDto);
     }
+
+    @Patch()
+    public async updateTweet(@Body() updateTweetDto: UpdateTweetDto) {
+        return await this._tweetsService.updateTweet(updateTweetDto);
+    }
+
+
+    @Get('get-tweets-for-user/:userId')
+    async getTweets(@Param('userId', ParseIntPipe) userId: number) {
+        return await this._tweetsService.getTweets(userId);
+    }
+
+    @Delete(':id')
+    async deleteExistingTweet(@Param('id', ParseIntPipe) id: number) {
+        return await this._tweetsService.deleteExistingTweet(id);
+    }
+
+
 }
