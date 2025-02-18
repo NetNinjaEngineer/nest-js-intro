@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Hashtag {
@@ -11,4 +11,7 @@ export class Hashtag {
         unique: true
     })
     text: string
+
+    @DeleteDateColumn()
+    deletedAt: Date
 }

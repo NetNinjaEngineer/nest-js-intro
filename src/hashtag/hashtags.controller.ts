@@ -1,8 +1,8 @@
-import { Body, Controller, Get, Post, ValidationPipe } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, ValidationPipe } from "@nestjs/common";
 import { CreateHashtagDto } from "./dtos/create-hashtag.dto";
 import { HashtagsService } from "./hashtags.service";
 
-@Controller('api/hastags')
+@Controller('api/hashtags')
 export class HashtagsController {
     constructor(private readonly hashtagService: HashtagsService) { }
 
@@ -16,5 +16,10 @@ export class HashtagsController {
     @Get()
     async getAll() {
         return await this.hashtagService.getAllHashtags();
+    }
+
+    @Delete(':id')
+    public async deleteHashtag(@Param('id', ParseIntPipe) id: number) {
+        return await this.hashtagService.deleteHashtag(id);
     }
 }
