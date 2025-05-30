@@ -12,11 +12,12 @@ import { ProfileModule } from './profile/profile.module';
 import { HashtagModule } from './hashtag/hashtags.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
+const environment = process.env.NODE_ENV;
 @Module({
     imports: [
         ConfigModule.forRoot({
             isGlobal: true,
-            envFilePath: './src/.env'
+            envFilePath: !environment ? '.env' : `.env.${environment.trim()}`
         }),
         TypeOrmModule.forRootAsync({
             imports: [ConfigModule],

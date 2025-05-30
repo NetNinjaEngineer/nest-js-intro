@@ -57,7 +57,7 @@ export class UsersService {
     ];
 
     getAllUsers(): User[] {
-        const environment = this._configService.get<string>('ENV_MODE');
+        const environment = this._configService.get("ENV_MODE");
         console.log(environment);
         return this._users;
     }
