@@ -10,18 +10,24 @@ import { GroupModule } from './group/group.module';
 import { MessagesModule } from './messages/messages.module';
 import { ProfileModule } from './profile/profile.module';
 import { HashtagModule } from './hashtag/hashtags.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
     imports: [
+        ConfigModule.forRoot({
+            isGlobal: true,
+            envFilePath: './src/.env'
+        }),
         TypeOrmModule.forRootAsync({
-            useFactory: () => ({
-                type: 'postgres',
-                host: 'localhost',
-                port: 5432,
-                username: 'postgres',
-                password: 'postgres',
-                database: 'sampledb',
+            imports: [ConfigModule],
+            inject: [ConfigService],
+            useFactory: (configService: ConfigService) => ({
+                type: configService.get('DB_TYPE') as any,
+                host: configService.get<string>('DB_HOST'),
+                port: parseInt(configService.get<string>('DB_PORT') || '5432', 10),
+                username: configService.get<string>('DB_USERNAME'),
+                password: configService.get<string>('DB_PASSWORD'),
+                database: configService.get<string>('DB_NAME'),
                 autoLoadEntities: true,
                 synchronize: true
             })
@@ -33,11 +39,7 @@ import { ConfigModule } from '@nestjs/config';
         GroupModule,
         MessagesModule,
         ProfileModule,
-        HashtagModule,
-        ConfigModule.forRoot({
-            isGlobal: true,
-            envFilePath: './src/.env'
-        })
+        HashtagModule
     ],
     controllers: [AppController],
     providers: [AppService],
