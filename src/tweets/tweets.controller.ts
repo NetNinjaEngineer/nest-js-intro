@@ -1,7 +1,8 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, UseGuards } from "@nestjs/common";
 import { TweetsService } from "./tweets.service";
 import { CreateTweetDto } from "./dto/create-tweet.dto";
 import { UpdateTweetDto } from "./dto/update-tweet.dto";
+import { AuthGuard } from "src/auth/guards/auth.guard";
 
 @Controller('/api/tweets')
 export class TweetsController {
@@ -22,6 +23,8 @@ export class TweetsController {
     // Specifically, it converts a string parameter to an integer. 
     // If the transformation fails (i.e., the parameter cannot be converted to an integer),
     //  it throws an error.
+
+    @UseGuards(AuthGuard)
     @Get(':id')
     getTweetById(@Param('id', ParseIntPipe) id: number) {
         return this._tweetsService.getSingleTweet(id);

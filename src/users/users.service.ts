@@ -1,9 +1,13 @@
 import { Injectable } from "@nestjs/common";
 import { UpdateUserDto } from "./dtos/updateUser.dto";
 import { User } from "./models/user.model";
+import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class UsersService {
+
+    constructor(private readonly _configService: ConfigService) { }
+
     getUsersBasedOnGender(gender: string): User[] {
         return this._users.filter(user => user.gender?.toLowerCase() === gender.toLowerCase());
     }
@@ -53,6 +57,8 @@ export class UsersService {
     ];
 
     getAllUsers(): User[] {
+        const environment = this._configService.get<string>('ENV_MODE');
+        console.log(environment);
         return this._users;
     }
 
