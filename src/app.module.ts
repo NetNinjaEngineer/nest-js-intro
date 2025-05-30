@@ -11,7 +11,8 @@ import { MessagesModule } from './messages/messages.module';
 import { ProfileModule } from './profile/profile.module';
 import { HashtagModule } from './hashtag/hashtags.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { appConfig } from './config/app.config';
+import databaseConfig from './config/database,config';
+import appConfig from './config/app.config';
 
 const environment = process.env.NODE_ENV;
 @Module({
@@ -19,7 +20,7 @@ const environment = process.env.NODE_ENV;
         ConfigModule.forRoot({
             isGlobal: true,
             envFilePath: !environment ? '.env' : `.env.${environment.trim()}`,
-            load: [appConfig]
+            load: [appConfig, databaseConfig]
         }),
         TypeOrmModule.forRootAsync({
             imports: [ConfigModule],
