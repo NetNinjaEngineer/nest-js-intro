@@ -1,4 +1,4 @@
-import { ConflictException, HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, HttpException, HttpStatus, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from "@nestjs/typeorm";
 import { RegisterDto } from "./dtos/register.dto";
 import { User } from "./entities/user.entity";
@@ -7,6 +7,8 @@ import { Repository } from "typeorm";
 import { BaseErrorResponseDto } from "src/common/dto/base-error-response.dto";
 import { CreateUserDto } from './dtos/create-user.dto';
 import { Profile } from '../profile/profile.entity';
+import { ConfigType } from '@nestjs/config';
+import authConfig from './config/auth.config';
 
 @Injectable()
 export class AuthService {
@@ -15,12 +17,18 @@ export class AuthService {
         private readonly userRepository: Repository<User>,
 
         @InjectRepository(Profile)
-        private readonly profileRepository: Repository<Profile>) {
+        private readonly profileRepository: Repository<Profile>,
+
+        @Inject(authConfig.KEY) private readonly _authConfig: ConfigType<typeof authConfig>) {
 
     }
 
 
     async register(registerRequest: RegisterDto): Promise<User> {
+
+        console.log(this._authConfig)
+        console.log(this._authConfig.sharedSecret)
+
         const { email, password, fullName } = registerRequest;
         const existingUser = await this.userRepository.findOne({ where: { email } });
         if (existingUser) {

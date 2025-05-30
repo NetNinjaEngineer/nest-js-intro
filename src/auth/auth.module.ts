@@ -7,6 +7,8 @@ import { User } from "./entities/user.entity";
 import { JwtModule } from "@nestjs/jwt";
 import { jwtConstants } from "./auth.constants";
 import { Profile } from '../profile/profile.entity';
+import { ConfigModule } from "@nestjs/config";
+import authConfig from "./config/auth.config";
 
 @Module({
     controllers: [AuthController],
@@ -24,7 +26,8 @@ import { Profile } from '../profile/profile.entity';
                 issuer: jwtConstants.issuer,
                 expiresIn: jwtConstants.expires
             }
-        })
+        }),
+        ConfigModule.forFeature(authConfig)
     ]
 })
 export class AuthModule {
